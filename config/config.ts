@@ -1,9 +1,9 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
-import { resolve } from 'path';
 import WebpackChain from 'webpack-chain';
 import proxy from './proxy';
 import routes from '../src/routes/routes';
+import { extraPostCSSPlugins } from './postcss';
 
 const { REACT_APP_ENV } = process.env;
 // export default defineConfig({
@@ -151,7 +151,7 @@ export default defineConfig({
   /**
    * 配置额外的postcss插件
    */
-  extraPostCSSPlugins: [],
+  extraPostCSSPlugins,
 
   /**
    * 开启 TypeScript 编译时类型检查，默认关闭。
@@ -167,13 +167,15 @@ export default defineConfig({
   /**
    * webpack配置
    * config，当前 webpack-chain 对象
-   * env，当前环境，development、production 或 test 等
-   * webpack，webpack 实例，用于获取其内部插件
-   * createCSSRule，用于扩展其他 CSS 实现，比如 sass, stylus
-   * type，当前 webpack 实例类型，默认走 csr，如果开启 ssr，会有 ssr 的 webpack 实例
+    {
+      * env，当前环境，development、production 或 test 等
+      * webpack，webpack 实例，用于获取其内部插件
+      * createCSSRule，用于扩展其他 CSS 实现，比如 sass, stylus
+      * type，当前 webpack 实例类型，默认走 csr，如果开启 ssr，会有 ssr 的 webpack 实例
+    }
    */
-  chainWebpack(memo: WebpackChain, { env, webpack, createCSSRule }) {
-    memo.merge({
+  chainWebpack(config: WebpackChain, {}) {
+    config.merge({
       optimization: {
         splitChunks: {
           chunks: 'all',

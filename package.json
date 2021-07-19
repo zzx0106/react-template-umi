@@ -26,12 +26,22 @@
     "umi": "^3.5.8"
   },
   "devDependencies": {
+    "@types/postcss-import": "^12.0.1",
+    "@types/postcss-preset-env": "^6.7.3",
+    "@types/postcss-url": "^8.0.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@umijs/plugin-sass": "^1.1.1",
     "@umijs/preset-react": "^1.8.18",
     "@umijs/test": "^3.5.8",
+    "cssnano": "^4.1.10",
+    "cssnano-preset-advanced": "^4.0.7",
     "lint-staged": "^10.0.7",
+    "postcss-flexbugs-fixes": "^4.1.0",
+    "postcss-import": "12.0.1",
+    "postcss-preset-env": "6.7.0",
+    "postcss-url": "8.0.0",
+    "postcss-viewport-units": "^0.1.6",
     "prettier": "^2.2.0",
     "typescript": "^4.1.2",
     "yorkie": "^2.0.0"
