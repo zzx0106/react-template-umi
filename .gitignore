@@ -9,9 +9,15 @@
 
 # production
 /dist
+/build
 
 # misc
 .DS_Store
+npm-debug.log*
+yarn-error.log
+.idea
+yarn.lock
+package-lock.json
 
 # umi
 /src/.umi
