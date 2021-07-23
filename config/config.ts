@@ -1,34 +1,16 @@
 // https://umijs.org/config/
 import { defineConfig } from "umi";
-import fs from "fs";
-import path, { join } from "path";
 import WebpackChain from "webpack-chain";
 import proxy from "./proxy";
 import routes from "../src/routes/routes";
 import { extraPostCSSPlugins } from "./postcss";
-function findSync(startPath: string) {
-  let result: string[] = [];
-  function finder(path: string) {
-    let files = fs.readdirSync(path);
-    files.forEach((val) => {
-      let fPath = join(path, val);
-      let stats = fs.statSync(fPath);
-      if (stats.isDirectory()) finder(fPath);
-      if (stats.isFile()) {
-        if (fPath.indexOf(".md") === -1) {
-          result.push(fPath);
-        }
-      }
-    });
-  }
-  finder(path.resolve(__dirname, startPath));
-  return result;
-}
+import { findSync } from "./tools";
+
 const fileNames = findSync("../src/assets/global"); // 拿到global里面的所有文件路径
 const cssGlobal = fileNames
   .map((filename) => `@import "${filename}";`.replace(/\\/g, "/"))
   .join("");
-console.log("cssGlobal", cssGlobal);
+console.log("公共baseCss模块", cssGlobal);
 
 const { REACT_APP_ENV } = process.env;
 // export default defineConfig({

@@ -115,7 +115,7 @@ inject(
 /** 去除数组为空的项 */
 inject(Array.prototype, "trim", function (this: any[]) {
   if (Array.isArray(this)) {
-    return (this as any[]).filter((i) => i);
+    return this.filter((i) => i);
   }
   return this;
 });
@@ -160,8 +160,7 @@ inject(String.prototype, "addLeftZero", function (this: string): string {
   return ("00" + this).slice(-2);
 });
 /** 生成随机数名 */
-inject(String.prototype, "randomName", function (length = 4) {
-  // @ts-ignore
+inject(String.prototype, "randomName", function (this: any, length = 4) {
   return (
     Math.random().toString().slice(-length) + this.slice(this.lastIndexOf("."))
   );
@@ -171,10 +170,8 @@ inject(Date.prototype, "format", function (this: string, mask, utc): string {
   return dateFormat(this, mask, utc);
 });
 
-inject(Promise.prototype, "is", async function (): Promise<any> {
-  // @ts-ignore
+inject(Promise.prototype, "is", async function (this: any): Promise<any> {
   const is = isPromise(this);
-  // @ts-ignore
   if (!is) return this;
   try {
     // @ts-ignore
