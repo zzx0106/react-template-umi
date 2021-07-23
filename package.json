@@ -21,9 +21,16 @@
   },
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
+    "@rematch/core": "^2.0.1",
+    "@rematch/immer": "^2.0.1",
+    "@rematch/loading": "^2.0.1",
+    "@rematch/persist": "^2.0.1",
+    "axios": "^0.21.1",
+    "intersection-observer": "^0.12.0",
     "react": "17.x",
     "react-dom": "17.x",
-    "umi": "^3.5.8"
+    "react-redux": "^7.2.4",
+    "umi": "3.5.8"
   },
   "devDependencies": {
     "@types/postcss-import": "^12.0.1",
@@ -32,7 +39,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@umijs/plugin-sass": "^1.1.1",
-    "@umijs/preset-react": "^1.8.18",
+    "@umijs/preset-react": "^1.8.21",
     "@umijs/test": "^3.5.8",
     "cssnano": "^4.1.10",
     "cssnano-preset-advanced": "^4.0.7",

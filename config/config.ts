@@ -1,9 +1,34 @@
 // https://umijs.org/config/
-import { defineConfig } from 'umi';
-import WebpackChain from 'webpack-chain';
-import proxy from './proxy';
-import routes from '../src/routes/routes';
-import { extraPostCSSPlugins } from './postcss';
+import { defineConfig } from "umi";
+import fs from "fs";
+import path, { join } from "path";
+import WebpackChain from "webpack-chain";
+import proxy from "./proxy";
+import routes from "../src/routes/routes";
+import { extraPostCSSPlugins } from "./postcss";
+function findSync(startPath: string) {
+  let result: string[] = [];
+  function finder(path: string) {
+    let files = fs.readdirSync(path);
+    files.forEach((val) => {
+      let fPath = join(path, val);
+      let stats = fs.statSync(fPath);
+      if (stats.isDirectory()) finder(fPath);
+      if (stats.isFile()) {
+        if (fPath.indexOf(".md") === -1) {
+          result.push(fPath);
+        }
+      }
+    });
+  }
+  finder(path.resolve(__dirname, startPath));
+  return result;
+}
+const fileNames = findSync("../src/assets/global"); // 拿到global里面的所有文件路径
+const cssGlobal = fileNames
+  .map((filename) => `@import "${filename}";`.replace(/\\/g, "/"))
+  .join("");
+console.log("cssGlobal", cssGlobal);
 
 const { REACT_APP_ENV } = process.env;
 // export default defineConfig({
@@ -38,7 +63,7 @@ export default defineConfig({
 
   // favicon: '',
 
-  title: '项目主标题1',
+  title: "项目主标题1",
   // 打包输出目录(默认dist)
   // outputPath: 'dist'
   // webpack的publicPath(默认/)
@@ -57,7 +82,7 @@ export default defineConfig({
 
   devServer: {
     port: 10087,
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     // https: false, // 是否开启https
     // writeToDisk: false, // 生成 assets 到文件系统
   },
@@ -66,14 +91,14 @@ export default defineConfig({
    * 包模块结构分析工具，可以看到项目各模块的大小，按需优化 默认 server 端口号为 8888，
    */
   analyze: {
-    analyzerMode: 'server',
+    analyzerMode: "server",
     analyzerPort: 10086,
     openAnalyzer: true,
     // generate stats file while ANALYZE_DUMP exist
     generateStatsFile: false,
-    statsFilename: 'stats.json',
-    logLevel: 'info',
-    defaultSizes: 'parsed', // stat  // gzip
+    statsFilename: "stats.json",
+    logLevel: "info",
+    defaultSizes: "parsed", // stat  // gzip
   },
 
   /**
@@ -86,7 +111,7 @@ export default defineConfig({
   // history: 'hash',//hash路由
 
   // 开启该功能将会自动开启 webpack5 和 dynamicImport.
-  // mfsu: {},
+  mfsu: {},
 
   /**
    * 开启webpack5代替webpack4
@@ -104,7 +129,7 @@ export default defineConfig({
    */
   dynamicImport: {
     // 去除loading，这里导入一个空的组件即可
-    loading: '@ant-design/pro-layout/es/PageLoading',
+    loading: "@ant-design/pro-layout/es/PageLoading",
   },
   /**
    * 预渲染html页面
@@ -146,7 +171,15 @@ export default defineConfig({
   /**
    * sass
    */
-  sass: {},
+  sass: {
+    prependData: cssGlobal,
+    // 默认为dart-sass，可以更换
+    // implementation: require('node-sass'),
+    // sassOptions: {
+
+    // },
+    sourceMap: true,
+  },
 
   /**
    * 配置额外的postcss插件
@@ -178,27 +211,27 @@ export default defineConfig({
     config.merge({
       optimization: {
         splitChunks: {
-          chunks: 'all',
+          chunks: "all",
           minSize: 30000,
           minChunks: 3,
           maxAsyncRequests: 5,
           maxInitialRequests: 3,
-          automaticNameDelimiter: '.',
+          automaticNameDelimiter: ".",
           cacheGroups: {
             vendor: {
               test: /[\\/]node_modules[\\/]/,
-              name: 'vendor',
+              name: "vendor",
               priority: 2,
             },
             antd: {
               test: /[\\/]node_modules[\\/](antd|@ant-design)[\\/]/,
-              name: 'antd',
-              chunks: 'all',
+              name: "antd",
+              chunks: "all",
               priority: 2,
             },
             commons: {
-              name: 'commons',
-              chunks: 'initial',
+              name: "commons",
+              chunks: "initial",
               minChunks: 2,
             },
           },
@@ -216,7 +249,7 @@ export default defineConfig({
    * 设置 node_modules 目录下依赖文件的编译方式  type: 'none', 不走babel
    */
   nodeModulesTransform: {
-    type: 'none',
+    type: "none",
   },
   // 配置路由
   routes,

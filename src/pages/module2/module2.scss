@@ -1,0 +1,10 @@
+// @import '../../assets/global/base.scss'; 如果配置在global中，则无需导入
+
+.test-base-sass {
+  width: 200px;
+  height: 200px;
+  background: blueviolet;
+  color: aliceblue;
+  @include red-box();
+  @include ojbk();
+}

@@ -30,6 +30,11 @@
   //   "editor.defaultFormatter": "esbenp.prettier-vscode"
   // },
   "editor.tabSize": 2,
+  // 注意：如果项目根目录下存在.editorconfig文件，则prettier会优先读取它文件，则prettier会优先读取它
+  // 如何避免: 1.删除.editorconfig文件
+  // 2.如下配置
+  // "prettier.useEditorConfig": false,
+
   "prettier.printWidth": 140, // 超过最大值换行
   "prettier.bracketSpacing": true,
   "prettier.jsxBracketSameLine": true,

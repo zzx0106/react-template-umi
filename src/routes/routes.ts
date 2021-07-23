@@ -1,12 +1,12 @@
-import { module1 } from './module/module1';
-import module2 from './module/module2';
+import { module1 } from "./module/module1";
+import module2 from "./module/module2";
 
 const routes: Routes = [
-  { path: '/', component: '@/pages/index' },
+  { path: "/", exact: true, name: "首页", component: "@/pages/index" },
   ...module1,
   ...module2,
   // { component: '@/pages/403' },
-  { component: '@/pages/404' },
+  { component: "@/pages/404" },
 ];
 
 export default routes;
@@ -16,6 +16,6 @@ export type Routes = {
   wrappers?: string[];
   redirect?: string;
   exact?: boolean;
-  routes?: any[];
+  routes?: Routes;
   [k: string]: any;
 }[];
