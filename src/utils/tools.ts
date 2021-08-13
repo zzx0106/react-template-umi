@@ -10,12 +10,12 @@ function removeStorage(key: string) {
 }
 function getStorage(key: string) {
   const data = localStorage.getItem(key);
-  return JSON.parse((data === 'undefined' ? '""' : data) as string);
+  return JSON.parse((data === "undefined" ? '""' : data) as string);
 }
 
 function isObject(value: any): boolean {
   const type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
+  return value != null && (type == "object" || type == "function");
 }
 interface DebouncedFunc<T extends (...args: any[]) => any> {
   (...args: Parameters<T>): ReturnType<T> | undefined;
@@ -33,7 +33,7 @@ interface DebounceSettings {
 function debounce<T extends (...args: any) => any>(
   func: T,
   wait: number = 0,
-  options?: DebounceSettings,
+  options?: DebounceSettings
 ): DebouncedFunc<T> {
   let lastArgs: IArguments | undefined,
     lastThis: any,
@@ -46,15 +46,15 @@ function debounce<T extends (...args: any) => any>(
     maxing = false,
     trailing = true;
 
-  if (typeof func != 'function') {
-    throw new Error('回调必须是函数');
+  if (typeof func != "function") {
+    throw new Error("回调必须是函数");
   }
   wait = +wait || 0;
   if (options && isObject(options)) {
     leading = !!options?.leading;
-    maxing = 'maxWait' in options;
+    maxing = "maxWait" in options;
     maxWait = maxing ? Math.max(+(options?.maxWait ?? 0) || 0, wait) : maxWait;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
   }
 
   function invokeFunc(time: number) {
@@ -165,17 +165,17 @@ function debounce<T extends (...args: any) => any>(
 function throttle<T extends (...args: any) => any>(
   func: T,
   wait?: number,
-  options?: { leading?: boolean; trailing?: boolean },
+  options?: { leading?: boolean; trailing?: boolean }
 ): DebouncedFunc<T> {
   let leading = true,
     trailing = true;
 
-  if (typeof func != 'function') {
-    throw new Error('回调必须是函数');
+  if (typeof func != "function") {
+    throw new Error("回调必须是函数");
   }
   if (options && isObject(options)) {
-    leading = 'leading' in options ? !!options.leading : leading;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
+    leading = "leading" in options ? !!options.leading : leading;
+    trailing = "trailing" in options ? !!options.trailing : trailing;
   }
   return debounce(func, wait, {
     leading: leading,
@@ -198,11 +198,11 @@ interface IEntry extends IntersectionObserverEntry {
  * 需要在标签上使用data-src
  */
 function lazyImageLoad() {
-  let imgList = [...document.querySelectorAll('img')];
-  console.log('lazyImageLoad', imgList);
+  let imgList = [...document.querySelectorAll("img")];
+  console.log("lazyImageLoad", imgList);
   let num = imgList.length;
   let lazyLoad = function () {};
-  if (window['IntersectionObserver']) {
+  if (window["IntersectionObserver"]) {
     /**当 img 标签进入可视区域时会执行实例化时的回调，
      * 同时给回调传入一个 entries 参数，保存着实例观察的所有元素的一些状态，
      * 比如每个元素的边界信息，当前元素对应的 DOM 节点，
@@ -237,16 +237,16 @@ function lazyImageLoad() {
             deleteIndexList.push(index);
             count++;
             if (count === num) {
-              document.removeEventListener('scroll', lazyLoad);
+              document.removeEventListener("scroll", lazyLoad);
             }
           }
         });
         imgList = imgList.filter(
-          (_, index) => !deleteIndexList.includes(index),
+          (_, index) => !deleteIndexList.includes(index)
         );
       };
     })();
-    document.addEventListener('scroll', throttle(lazyLoad, 100));
+    document.addEventListener("scroll", throttle(lazyLoad, 100));
   }
   return lazyLoad();
 }
@@ -255,19 +255,19 @@ function lazyImageLoad() {
  * @param {Object} obj 需要私有化的变量名以 _ 开头
  */
 function privatization(obj: any) {
-  if (!window['Proxy']) {
+  if (!window["Proxy"]) {
     throw new Error('"Proxy" not support, you need babel-polyfill');
   }
   return new Proxy(obj, {
     get(target, key: string) {
-      if (key.startsWith('_')) {
-        throw new Error('private key');
+      if (key.startsWith("_")) {
+        throw new Error("private key");
       }
       return Reflect.get(target, key);
     },
     ownKeys(target) {
       return Reflect.ownKeys(target).filter(
-        (key) => !(key as string).startsWith('_'),
+        (key) => !(key as string).startsWith("_")
       );
     },
   });
@@ -280,7 +280,7 @@ function privatization(obj: any) {
  */
 async function errorCaptured<T>(
   asyncFunc: (params: AnyObj) => Promise<T>,
-  params: AnyObj,
+  params: AnyObj
 ) {
   try {
     let res = await asyncFunc(params);
@@ -300,10 +300,10 @@ function jsonSort(jsonObj: AnyObj, isSort = true) {
     if (jsonObj.hasOwnProperty(key)) arr.push(key);
   }
   isSort && arr.sort();
-  let str = '';
+  let str = "";
   for (let i in arr) {
     // 过滤掉 Array.prototype.xxx进去的字段
-    if (arr.hasOwnProperty(i)) str += arr[i] + '=' + jsonObj[arr[i]] + '&';
+    if (arr.hasOwnProperty(i)) str += arr[i] + "=" + jsonObj[arr[i]] + "&";
   }
   return str.substr(0, str.length - 1);
 }
@@ -345,8 +345,8 @@ function P() {
       ret.num = floatNum;
       return ret;
     }
-    let strfi = floatNum + '';
-    let dotPos = strfi.indexOf('.');
+    let strfi = floatNum + "";
+    let dotPos = strfi.indexOf(".");
     let len = strfi.substr(dotPos + 1).length;
     let times = Math.pow(10, len);
     let intNum = parseInt(`${Math.abs(floatNum) * times + 0.5}`, 10);
@@ -377,7 +377,7 @@ function P() {
     let max = t1 > t2 ? t1 : t2;
     let result = null;
     switch (op) {
-      case 'add':
+      case "add":
         if (t1 === t2) {
           // 两个小数位数相同
           result = n1 + n2;
@@ -389,7 +389,7 @@ function P() {
           result = n1 * (t2 / t1) + n2;
         }
         return result / max;
-      case 'subtract':
+      case "subtract":
         if (t1 === t2) {
           result = n1 - n2;
         } else if (t1 > t2) {
@@ -398,10 +398,10 @@ function P() {
           result = n1 * (t2 / t1) - n2;
         }
         return result / max;
-      case 'multiply':
+      case "multiply":
         result = (n1 * n2) / (t1 * t2);
         return result;
-      case 'divide':
+      case "divide":
         result = (n1 / n2) * (t2 / t1);
         return result;
       default:
@@ -410,16 +410,16 @@ function P() {
   }
 
   function add(a: number, b: number) {
-    return operation(a, b, 'add');
+    return operation(a, b, "add");
   }
   function subtract(a: number, b: number, digits: number) {
-    return operation(a, b, 'subtract').toFixed(digits);
+    return operation(a, b, "subtract").toFixed(digits);
   }
   function multiply(a: number, b: number, digits: number) {
-    return operation(a, b, 'multiply').toFixed(digits);
+    return operation(a, b, "multiply").toFixed(digits);
   }
   function divide(a: number, b: number, digits: number) {
-    return operation(a, b, 'divide').toFixed(digits);
+    return operation(a, b, "divide").toFixed(digits);
   }
 
   // exports
@@ -438,7 +438,7 @@ function filter(body: AnyObj) {
   // 过滤掉所有key为空的字段
   if (body && Object.keys(body).length > 0) {
     body = Object.keys(body).reduce((target, key) => {
-      if (body[key] !== '') {
+      if (body[key] !== "") {
         // 要设置不等于'' 因为可能出现0
         target[key] = body[key];
       }
@@ -478,7 +478,7 @@ function offset(ele: HTMLElement) {
 function isAndroid() {
   let u = navigator.userAgent;
   // 安卓
-  let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
+  let isAndroid = u.indexOf("Android") > -1 || u.indexOf("Adr") > -1;
   return isAndroid;
 }
 function isIos(): boolean {
@@ -494,7 +494,7 @@ function isNull(data: any) {
   if (Array.isArray(data)) {
     return data.length === 0;
   }
-  return data == null || data === '' || data === 'undefined';
+  return data == null || data === "" || data === "undefined";
 }
 /**
  * 获取url的params
@@ -503,24 +503,24 @@ function isNull(data: any) {
  * @returns
  */
 function getUrlParam(name: string, url: string) {
-  let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
+  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   let r;
   if (isNull(url)) {
     r = window.location.search.substr(1).match(reg);
   } else {
-    let ParamList = url.split('?');
+    let ParamList = url.split("?");
     if (ParamList.length > 1) {
       r = ParamList[1].substr(0).match(reg);
     } else {
       return url;
     }
   }
-  let context = '';
+  let context = "";
   if (r != null) {
     context = r[2];
   }
-  return context == null || context === '' || context === 'undefined'
-    ? ''
+  return context == null || context === "" || context === "undefined"
+    ? ""
     : context;
 }
 
@@ -535,9 +535,9 @@ function checkedType(data: any) {
 function deepClone<T>(target: AnyObj): T | AnyObj {
   let result,
     targetType = checkedType(target);
-  if (targetType == 'Object') {
+  if (targetType == "Object") {
     result = {};
-  } else if (targetType == 'Array') {
+  } else if (targetType == "Array") {
     result = [];
   } else {
     return target; //普通数据类型直接返回
@@ -546,7 +546,7 @@ function deepClone<T>(target: AnyObj): T | AnyObj {
   for (let i in target) {
     if (target.hasOwnProperty(i)) {
       let value = target[i];
-      if (checkedType(value) == 'Object' || checkedType(value) == 'Array') {
+      if (checkedType(value) == "Object" || checkedType(value) == "Array") {
         // @ts-ignore TODO 优化types
         result[i] = deepClone(value);
       } else {
@@ -571,7 +571,7 @@ c.a;
 function deepMerge(...objArr: any[]) {
   let ret = {};
   function handler(key: string, source: AnyObj, ret: AnyObj) {
-    let isObj = typeof source[key] == 'object'; //判断是否是对象
+    let isObj = typeof source[key] == "object"; //判断是否是对象
     if (isObj) {
       if (!ret[key]) {
         ret[key] = {}; //键名不存在，拷贝键名
@@ -598,7 +598,7 @@ function deepMerge(...objArr: any[]) {
  * @return {string} zh en
  */
 function getSysLanguage() {
-  return 'en';
+  return "en";
   // return window.navigator.language.slice(0, 2);  （产品林鑫要求默认是英文，不需要根据用户浏览器）
 }
 /**
@@ -607,53 +607,53 @@ function getSysLanguage() {
  */
 function getBrowser() {
   const userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
-  const isOpera = userAgent.indexOf('Opera') > -1; //判断是否Opera浏览器
+  const isOpera = userAgent.indexOf("Opera") > -1; //判断是否Opera浏览器
   // let isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
-  const isIE = window.ActiveXObject || 'ActiveXObject' in window;
+  const isIE = window.ActiveXObject || "ActiveXObject" in window;
   // let isEdge = userAgent.indexOf("Windows NT 6.1; Trident/7.0;") > -1 && !isIE; //判断是否IE的Edge浏览器
-  const isEdge = userAgent.indexOf('Edge') > -1; //判断是否IE的Edge浏览器
-  const isFF = userAgent.indexOf('Firefox') > -1; //判断是否Firefox浏览器
+  const isEdge = userAgent.indexOf("Edge") > -1; //判断是否IE的Edge浏览器
+  const isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
   const isSafari =
-    userAgent.indexOf('Safari') > -1 && userAgent.indexOf('Chrome') == -1; //判断是否Safari浏览器
+    userAgent.indexOf("Safari") > -1 && userAgent.indexOf("Chrome") == -1; //判断是否Safari浏览器
   const isChrome =
-    userAgent.indexOf('Chrome') > -1 &&
-    userAgent.indexOf('Safari') > -1 &&
+    userAgent.indexOf("Chrome") > -1 &&
+    userAgent.indexOf("Safari") > -1 &&
     !isEdge; //判断Chrome浏览器
 
   if (isIE) {
-    const reIE = new RegExp('MSIE (\\d+\\.\\d+);');
+    const reIE = new RegExp("MSIE (\\d+\\.\\d+);");
     reIE.test(userAgent);
-    const fIEVersion = parseFloat(RegExp['$1']);
-    if (userAgent.indexOf('MSIE 6.0') != -1) {
-      return 'ie6';
+    const fIEVersion = parseFloat(RegExp["$1"]);
+    if (userAgent.indexOf("MSIE 6.0") != -1) {
+      return "ie6";
     } else if (fIEVersion == 7) {
-      return 'ie7';
+      return "ie7";
     } else if (fIEVersion == 8) {
-      return 'ie8';
+      return "ie8";
     } else if (fIEVersion == 9) {
-      return 'ie9';
+      return "ie9";
     } else if (fIEVersion == 10) {
-      return 'ie10';
+      return "ie10";
     } else if (userAgent.toLowerCase().match(/rv:([\d.]+)\) like gecko/)) {
-      return 'ie11';
+      return "ie11";
     } else {
-      return '0';
+      return "0";
     } //IE版本过低
   } //isIE end
   if (isFF) {
-    return 'ff';
+    return "ff";
   }
   if (isOpera) {
-    return 'opera';
+    return "opera";
   }
   if (isSafari) {
-    return 'safari';
+    return "safari";
   }
   if (isChrome) {
-    return 'chrome';
+    return "chrome";
   }
   if (isEdge) {
-    return 'edge';
+    return "edge";
   }
 }
 /**
@@ -713,8 +713,8 @@ function touchController(domName: string, options: AnyObj = {}) {
 function timeToTime(start: number, end: number) {
   const arr = [];
   if (!start) {
-    const h = new Date().format('HH');
-    const m = new Date().format('MM');
+    const h = new Date().format("HH");
+    const m = new Date().format("MM");
     start = +h;
     if (+m < 30) {
       arr.push(`${h}:30`);
@@ -729,14 +729,14 @@ function timeToTime(start: number, end: number) {
   return arr;
 }
 function dayToDay(num: number) {
-  const days = ['今天', '明天'];
+  const days = ["今天", "明天"];
   if (num <= 2) return days;
   const now = new Date().getTime();
   let time = 2; // 从第三天开始算
   num -= 2; // 减去今明两天的
   while (time <= num) {
     days;
-    days.push(new Date(now + time * 24 * 3600 * 1000).format('mm.dd (ddd)'));
+    days.push(new Date(now + time * 24 * 3600 * 1000).format("mm.dd (ddd)"));
     time++;
   }
   return days;
@@ -778,19 +778,19 @@ function formatePms(list: any[]) {
 /**  获取36位不重复唯一ID （uuid） */
 function uuid() {
   let chars =
-    '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
   let uuid = [],
     i,
     r;
   // uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-  uuid[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
+  uuid[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
   for (i = 0; i < 36; i++) {
     if (!uuid[i]) {
       r = 0 | (Math.random() * 16);
       uuid[i] = chars[i == 19 ? (r & 0x3) | 0x8 : r];
     }
   }
-  return uuid.join('');
+  return uuid.join("");
 }
 /**
  * 时间差值计算
@@ -806,7 +806,7 @@ function timeDayGap(a: number, b: number) {
  * @param time2  例如（2017-09-14）
  * @returns {string}
  */
-function diy_time(time1: number, time2: number) {
+function diyTime(time1: number, time2: number) {
   let $time1 = Date.parse(new Date(time1).toString());
   let $time2 = Date.parse(new Date(time2).toString());
   let $time3 = Math.abs(parseInt(String(($time2 - $time1) / 1000 / 3600 / 24))); //两日期差天数
@@ -816,7 +816,7 @@ function diy_time(time1: number, time2: number) {
  * 字符串日期格式化成date
  * @param {String} strDate 时间 yyyy-MM-dd
  */
-function dateFormat(strDate = '') {
+function dateFormat(strDate = "") {
   const date = strDate
     .replace(/\d+(?=-[^-]+$)/, function (a) {
       return String(parseInt(a, 10) - 1);
@@ -839,20 +839,20 @@ function addDay(formatDate: string, count: number) {
   month = date.getMonth() + 1;
   day = date.getDate();
   if (month.toString().length == 1) {
-    month = '0' + month;
+    month = "0" + month;
   }
   if (day.toString().length == 1) {
-    day = '0' + day;
+    day = "0" + day;
   }
-  dateStr = year + '-' + month + '-' + day;
+  dateStr = year + "-" + month + "-" + day;
   return dateStr;
 }
 /** 判断对象是否是promise对象 */
 function isPromise(obj: Promise<any>) {
   return (
     !!obj && //有实际含义的变量才执行方法，变量null，undefined和''空串都为false
-    (typeof obj === 'object' || typeof obj === 'function') && // 初始promise 或 promise.then返回的
-    typeof obj.then === 'function'
+    (typeof obj === "object" || typeof obj === "function") && // 初始promise 或 promise.then返回的
+    typeof obj.then === "function"
   );
 }
 
@@ -864,13 +864,62 @@ function isPromise(obj: Promise<any>) {
  */
 function thousands(num: number | string) {
   // const _num = !decimal ? Number(num) : Number(num).toFixed(+decimal);
-  let str = '--';
+  let str = "--";
   if (num === 0 || num) {
-    str = `${num}`.replace(/\d{1,3}(?=(\d{3})+(\.\d+)?$)/g, '$&,');
+    str = `${num}`.replace(/\d{1,3}(?=(\d{3})+(\.\d+)?$)/g, "$&,");
   }
   return str;
 }
+/**
+ * 秒转时分秒
+ * @param {string} value 秒
+ * @returns {string} 00:12
+ */
+function formatSeconds(value: number) {
+  let secondTime = value; // 秒
+  let minuteTime = 0; // 分
+  let hourTime = 0; // 小时
+  let dayTime = 0;
+  if (secondTime >= 60) {
+    minuteTime = parseInt(String(secondTime / 60));
+    secondTime = parseInt(String(secondTime % 60));
+    if (minuteTime >= 60) {
+      hourTime = parseInt(String(minuteTime / 60));
+      minuteTime = parseInt(String(minuteTime % 60));
+      if (hourTime >= 24) {
+        dayTime = parseInt(String(hourTime / 24));
+        hourTime = parseInt(String(hourTime % 24));
+      }
+    }
+  }
+  let result =
+    "" +
+    (parseInt(String(secondTime)) < 10
+      ? "0" + parseInt(String(secondTime))
+      : parseInt(String(secondTime)));
+  // if (minuteTime > 0) {
+  result =
+    "" +
+    (parseInt(String(minuteTime)) < 10
+      ? "0" + parseInt(String(minuteTime))
+      : parseInt(String(minuteTime))) +
+    ":" +
+    result;
+  // }
+  if (hourTime > 0) {
+    result =
+      "" +
+      (parseInt(String(hourTime)) < 10
+        ? "0" + parseInt(String(hourTime))
+        : parseInt(String(hourTime))) +
+      ":" +
+      result;
+  }
+
+  return { dayTime, hourTime, minuteTime, secondTime, result };
+}
 export {
+  formatSeconds,
   isPromise,
   addDay,
   dateFormat,
@@ -902,7 +951,7 @@ export {
   getUrlParam, //附件名字
   deepClone, // 深克隆
   deepMerge, // 深合并
-  timeDayGap,
-  diy_time,
+  timeDayGap, // 时间差值计算
+  diyTime, // 计算两日期差 兼容谷歌，火狐浏览器
   thousands, // 数字千分位
 };

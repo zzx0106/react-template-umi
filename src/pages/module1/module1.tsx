@@ -9,7 +9,7 @@ const persistor = getPersistor();
 
 const Module1 = () => {
   const common = useSelector((state: RootState) => state.common);
-  const disPatch = useDispatch<RootDispatch>();
+  const dispatch = useDispatch<RootDispatch>();
   console.log("countState", common);
 
   useEffect(() => {
@@ -28,11 +28,11 @@ const Module1 = () => {
   return (
     <div>
       这是module1
-      <button onClick={() => disPatch.count.add(1)}>点击同步增加</button>
-      <button onClick={() => disPatch.count.addAsync(1)}>点击异步增加</button>
+      <button onClick={() => dispatch.common.add(2)}>点击同步增加</button>
+      <button onClick={() => dispatch.common.addAsync(1)}>点击异步增加</button>
       <div>{common.a}</div>
       <br />
-      <button onClick={() => disPatch.common.addList()}>点击增加数组</button>
+      <button onClick={() => dispatch.common.addList()}>点击增加数组</button>
       {common.dataList.map((item, index) => {
         return <div key={index}>{item.data}</div>;
       })}

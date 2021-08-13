@@ -8,10 +8,10 @@ export const common = createModel<RootModel>()({
     dataList: [{ data: 1 }],
   },
   reducers: {
-    add(state, payload: number = 1) {
-      // 使用immer后可以这样
+    add(state, payload: number) {
+      // 使用immer后可以这样, 否则需要return 纯对象，具体参考redux的reducer
       state.a += payload;
-      console.log("state", state);
+      console.log("state", state, payload);
       return state;
     },
     addList(state) {

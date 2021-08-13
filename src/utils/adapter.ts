@@ -1,8 +1,8 @@
 // // vw vh适配方案，会将vw，vh转为对应px
-import viewportUnitsBuggyfill from '@/libs/viewport-units-buggyfill/index';
-import hacks from '@/libs/viewport-units-buggyfill/hacks';
+import viewportUnitsBuggyfill from "@/libs/viewport-units-buggyfill/index";
+import hacks from "@/libs/viewport-units-buggyfill/hacks";
 // import FastClick from 'fastclick';
-import { isIos } from './tools';
+import { isIos } from "./tools";
 
 viewportUnitsBuggyfill.init({
   hacks,
@@ -18,7 +18,7 @@ function setRem() {
   const scale = document.documentElement.clientWidth / 750;
   // 设置页面根节点字体大小
   document.documentElement.style.fontSize =
-    baseSize * Math.min(scale, 2) + 'px';
+    baseSize * Math.min(scale, 2) + "px";
 }
 // 初始化
 setRem();
@@ -27,6 +27,7 @@ window.onresize = function () {
   setRem();
 };
 
+// 新版本手机已经解决300ms的问题
 // FastClick.attach(document.body);
 // // 解决FastClick导致的点击困难问题
 // FastClick.prototype.focus = function(targetElement) {
@@ -48,29 +49,29 @@ window.onresize = function () {
 //   }
 // };
 window.addEventListener(
-  'touchstart',
+  "touchstart",
   function (e) {
     if (e.targetTouches.length === 2) {
       e.preventDefault();
     }
   },
-  { passive: false },
+  { passive: false }
 );
 if (/Android/gi.test(navigator.userAgent)) {
-  window.addEventListener('resize', function () {
+  window.addEventListener("resize", function () {
     const activeEl = document.activeElement as Element & {
       scrollIntoViewIfNeeded?: () => void;
     };
     if (
-      document.activeElement!.tagName == 'INPUT' ||
-      document.activeElement!.tagName == 'TEXTAREA'
+      document.activeElement!.tagName == "INPUT" ||
+      document.activeElement!.tagName == "TEXTAREA"
     ) {
       // 最次级方案，有bug，针对小米
       // let top = document.activeElement.getBoundingClientRect().top;
       // window.scrollTo(0, top);
       window.setTimeout(function () {
         if (activeEl) {
-          if ('scrollIntoViewIfNeeded' in activeEl) {
+          if ("scrollIntoViewIfNeeded" in activeEl) {
             activeEl.scrollIntoViewIfNeeded?.();
           } else {
             activeEl.scrollIntoView();
@@ -80,7 +81,7 @@ if (/Android/gi.test(navigator.userAgent)) {
     }
   });
 }
-document.body.addEventListener('focusout', () => {
+document.body.addEventListener("focusout", () => {
   // 软键盘收起的事件处理
   if (isIos()) {
     globalScrollToEvent();

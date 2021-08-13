@@ -1,15 +1,26 @@
-# umi project
+# umi 模板
 
-## Getting Started
-
-Install dependencies,
-
-```bash
-$ yarn
+## vscode 插件同步
+### window
+```
+ctrl + shift + p
+```
+### mac
+```
+command + shift + p
 ```
 
-Start the dev server,
+### 输入，然后安装所有vscode插件
+```
+Show Recommended Extensions
+```
 
-```bash
-$ yarn start
+## 安装依赖
+### 推荐使用npm 或者 yarn
+```
+yarn install
+```
+or
+```
+npm install
 ```
