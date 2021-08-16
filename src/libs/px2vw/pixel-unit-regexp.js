@@ -7,8 +7,8 @@
 // !singlequotes|!doublequotes|!url()|pixelunit
 function getUnitRegexp(unit) {
   return new RegExp(
-    '"[^"]+"|\'[^\']+\'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)' + unit,
-    'g',
+    "\"[^\"]+\"|'[^']+'|url\\([^\\)]+\\)|(\\d*\\.?\\d+)" + unit,
+    "g"
   );
 }
 

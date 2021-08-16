@@ -1,7 +1,7 @@
-import { Redirect } from 'umi';
+import { Redirect } from "umi";
 
 export default (props: any) => {
-  console.log('检测是否有登录态', props);
+  console.log("检测是否有登录态", props);
 
   if (true) {
     return <div>{props.children}</div>;

@@ -190,36 +190,36 @@ export default defineConfig({
     }
    */
   chainWebpack(config: WebpackChain, {}) {
-    config.merge({
-      optimization: {
-        splitChunks: {
-          chunks: "all",
-          minSize: 30000,
-          minChunks: 3,
-          maxAsyncRequests: 5,
-          maxInitialRequests: 3,
-          automaticNameDelimiter: ".",
-          cacheGroups: {
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: "vendor",
-              priority: 2,
-            },
-            antd: {
-              test: /[\\/]node_modules[\\/](antd|@ant-design)[\\/]/,
-              name: "antd",
-              chunks: "all",
-              priority: 2,
-            },
-            commons: {
-              name: "commons",
-              chunks: "initial",
-              minChunks: 2,
-            },
-          },
-        },
-      },
-    });
+    // config.merge({
+    //   optimization: {
+    //     splitChunks: {
+    //       chunks: 'all',
+    //       minSize: 30000,
+    //       minChunks: 3,
+    //       maxAsyncRequests: 5,
+    //       maxInitialRequests: 3,
+    //       automaticNameDelimiter: '.',
+    //       cacheGroups: {
+    //         vendor: {
+    //           test: /[\\/]node_modules[\\/]/,
+    //           name: 'vendor',
+    //           priority: 2,
+    //         },
+    //         antd: {
+    //           test: /[\\/]node_modules[\\/](antd|@ant-design)[\\/]/,
+    //           name: 'antd',
+    //           chunks: 'all',
+    //           priority: 2,
+    //         },
+    //         commons: {
+    //           name: 'commons',
+    //           chunks: 'initial',
+    //           minChunks: 2,
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
   },
 
   /**

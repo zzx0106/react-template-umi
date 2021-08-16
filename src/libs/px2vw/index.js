@@ -1,35 +1,35 @@
-'use strict';
+"use strict";
 
-var postcss = require('postcss');
-var objectAssign = require('object-assign');
-var { createPropListMatcher } = require('./prop-list-matcher');
-var { getUnitRegexp } = require('./pixel-unit-regexp');
+var postcss = require("postcss");
+var objectAssign = require("object-assign");
+var { createPropListMatcher } = require("./prop-list-matcher");
+var { getUnitRegexp } = require("./pixel-unit-regexp");
 
 var defaults = {
-  unitToConvert: 'px',
+  unitToConvert: "px",
   viewportWidth: 320,
   viewportHeight: 568, // not now used; TODO: need for different units and math for different properties
   unitPrecision: 5,
-  viewportUnit: 'vw',
-  fontViewportUnit: 'vw', // vmin is more suitable.
+  viewportUnit: "vw",
+  fontViewportUnit: "vw", // vmin is more suitable.
   selectorBlackList: [],
-  propList: ['*'],
+  propList: ["*"],
   minPixelValue: 1,
   mediaQuery: false,
   replace: true,
   landscape: false,
-  landscapeUnit: 'vw',
+  landscapeUnit: "vw",
   landscapeWidth: 568,
 };
 /* no */
-var ignoreNextComment = 'no-next';
-var ignorePrevComment = 'no';
+var ignoreNextComment = "no-next";
+var ignorePrevComment = "no";
 
-module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
+module.exports = postcss.plugin("postcss-px-to-viewport", function (options) {
   var opts = objectAssign({}, defaults, options);
 
-  checkRegExpOrArray(opts, 'exclude');
-  checkRegExpOrArray(opts, 'include');
+  checkRegExpOrArray(opts, "exclude");
+  checkRegExpOrArray(opts, "include");
 
   var pxRegex = getUnitRegexp(opts.unitToConvert);
   var satisfyPropList = createPropListMatcher(opts.propList);
@@ -42,11 +42,11 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
       if (opts.include && file) {
         if (
-          Object.prototype.toString.call(opts.include) === '[object RegExp]'
+          Object.prototype.toString.call(opts.include) === "[object RegExp]"
         ) {
           if (!opts.include.test(file)) return;
         } else if (
-          Object.prototype.toString.call(opts.include) === '[object Array]'
+          Object.prototype.toString.call(opts.include) === "[object Array]"
         ) {
           var flag = false;
           for (var i = 0; i < opts.include.length; i++) {
@@ -61,11 +61,11 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
       if (opts.exclude && file) {
         if (
-          Object.prototype.toString.call(opts.exclude) === '[object RegExp]'
+          Object.prototype.toString.call(opts.exclude) === "[object RegExp]"
         ) {
           if (opts.exclude.test(file)) return;
         } else if (
-          Object.prototype.toString.call(opts.exclude) === '[object Array]'
+          Object.prototype.toString.call(opts.exclude) === "[object Array]"
         ) {
           for (var i = 0; i < opts.exclude.length; i++) {
             if (opts.exclude[i].test(file)) return;
@@ -86,9 +86,9 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
             decl.clone({
               value: decl.value.replace(
                 pxRegex,
-                createPxReplace(opts, opts.landscapeUnit, opts.landscapeWidth),
+                createPxReplace(opts, opts.landscapeUnit, opts.landscapeWidth)
               ),
-            }),
+            })
           );
         });
 
@@ -106,7 +106,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
         var prev = decl.prev();
         if (
           prev &&
-          prev.type === 'comment' &&
+          prev.type === "comment" &&
           prev.text === ignoreNextComment
         ) {
           // remove comment
@@ -117,7 +117,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
         // next declaration is ignore conversion comment at same line
         if (
           next &&
-          next.type === 'comment' &&
+          next.type === "comment" &&
           next.text === ignorePrevComment
         ) {
           //   if (/\n/.test(next.raws.before)) {
@@ -133,7 +133,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
         var size;
         var params = rule.parent.params;
 
-        if (opts.landscape && params && params.indexOf('landscape') !== -1) {
+        if (opts.landscape && params && params.indexOf("landscape") !== -1) {
           unit = opts.landscapeUnit;
           size = opts.landscapeWidth;
         } else {
@@ -143,7 +143,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
         var value = decl.value.replace(
           pxRegex,
-          createPxReplace(opts, unit, size),
+          createPxReplace(opts, unit, size)
         );
 
         if (declarationExists(decl.parent, decl.prop, value)) return;
@@ -158,8 +158,8 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 
     if (landscapeRules.length > 0) {
       var landscapeRoot = new postcss.atRule({
-        params: '(orientation: landscape)',
-        name: 'media',
+        params: "(orientation: landscape)",
+        name: "media",
       });
 
       landscapeRules.forEach(function (rule) {
@@ -171,7 +171,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport', function (options) {
 });
 
 function getUnit(prop, opts) {
-  return prop.indexOf('font') === -1
+  return prop.indexOf("font") === -1
     ? opts.viewportUnit
     : opts.fontViewportUnit;
 }
@@ -182,22 +182,22 @@ function createPxReplace(opts, viewportUnit, viewportSize) {
     var pixels = parseFloat($1);
     if (pixels <= opts.minPixelValue) return m;
     var parsedVal = toFixed((pixels / viewportSize) * 100, opts.unitPrecision);
-    return parsedVal === 0 ? '0' : parsedVal + viewportUnit;
+    return parsedVal === 0 ? "0" : parsedVal + viewportUnit;
   };
 }
 
 function error(decl, message) {
-  throw decl.error(message, { plugin: 'postcss-px-to-viewport' });
+  throw decl.error(message, { plugin: "postcss-px-to-viewport" });
 }
 
 function checkRegExpOrArray(options, optionName) {
   var option = options[optionName];
   if (!option) return;
-  if (Object.prototype.toString.call(option) === '[object RegExp]') return;
-  if (Object.prototype.toString.call(option) === '[object Array]') {
+  if (Object.prototype.toString.call(option) === "[object RegExp]") return;
+  if (Object.prototype.toString.call(option) === "[object Array]") {
     var bad = false;
     for (var i = 0; i < option.length; i++) {
-      if (Object.prototype.toString.call(option[i]) !== '[object RegExp]') {
+      if (Object.prototype.toString.call(option[i]) !== "[object RegExp]") {
         bad = true;
         break;
       }
@@ -205,7 +205,7 @@ function checkRegExpOrArray(options, optionName) {
     if (!bad) return;
   }
   throw new Error(
-    'options.' + optionName + ' should be RegExp or Array of RegExp.',
+    "options." + optionName + " should be RegExp or Array of RegExp."
   );
 }
 
@@ -216,9 +216,9 @@ function toFixed(number, precision) {
 }
 
 function blacklistedSelector(blacklist, selector) {
-  if (typeof selector !== 'string') return;
+  if (typeof selector !== "string") return;
   return blacklist.some(function (regex) {
-    if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
+    if (typeof regex === "string") return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
 }

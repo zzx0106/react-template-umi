@@ -5,7 +5,7 @@
  * @update: Zzx
  */
 function factory() {
-  'use strict';
+  "use strict";
   /* global document, window, navigator, location, XMLHttpRequest, XDomainRequest, CustomEvent */
 
   let initialized = false;
@@ -19,7 +19,7 @@ function factory() {
   let styleNode;
   let isBuggyIE = /MSIE [0-9]\./i.test(userAgent);
   let isOldIE = /MSIE [0-8]\./i.test(userAgent);
-  let isOperaMini = userAgent.indexOf('Opera Mini') > -1;
+  let isOperaMini = userAgent.indexOf("Opera Mini") > -1;
 
   let isMobileSafari =
     /(iPhone|iPod|iPad).+AppleWebKit/i.test(userAgent) &&
@@ -41,18 +41,18 @@ function factory() {
   let isBadStockAndroid = (function () {
     // Android stock browser test derived from
     // http://stackoverflow.com/questions/24926221/distinguish-android-chrome-from-stock-browser-stock-browsers-user-agent-contai
-    let isAndroid = userAgent.indexOf(' Android ') > -1;
+    let isAndroid = userAgent.indexOf(" Android ") > -1;
     if (!isAndroid) {
       return false;
     }
 
-    let isStockAndroid = userAgent.indexOf('Version/') > -1;
+    let isStockAndroid = userAgent.indexOf("Version/") > -1;
     if (!isStockAndroid) {
       return false;
     }
 
     let versionNumber = parseFloat(
-      (userAgent.match('Android ([0-9.]+)') || [])[1],
+      (userAgent.match("Android ([0-9.]+)") || [])[1]
     );
     // anything below 4.4 uses WebKit without *any* viewport support,
     // 4.4 has issues with viewport units within calc()
@@ -63,7 +63,7 @@ function factory() {
   // http://caniuse.com/#feat=viewport-units
   if (!isBuggyIE) {
     isBuggyIE = !!navigator.userAgent.match(
-      /MSIE 10\.|Trident.*rv[ :]*1[01]\.| Edge\/1\d\./,
+      /MSIE 10\.|Trident.*rv[ :]*1[01]\.| Edge\/1\d\./
     );
   }
 
@@ -71,7 +71,7 @@ function factory() {
   // from https://github.com/krambuhl/custom-event-polyfill
   try {
     // eslint-disable-next-line no-new, no-use-before-define
-    new CustomEvent('test');
+    new CustomEvent("test");
   } catch (e) {
     let CustomEvent = function (event, params) {
       let evt;
@@ -81,12 +81,12 @@ function factory() {
         detail: undefined,
       };
 
-      evt = document.createEvent('CustomEvent');
+      evt = document.createEvent("CustomEvent");
       evt.initCustomEvent(
         event,
         params.bubbles,
         params.cancelable,
-        params.detail,
+        params.detail
       );
       return evt;
     };
@@ -152,7 +152,7 @@ function factory() {
       // this buggyfill only applies to mobile safari, IE9-10 and the Stock Android Browser.
       if (window.console && isOldIE) {
         console.info(
-          'viewport-units-buggyfill requires a proper CSSOM and basic viewport unit support, which are not available in IE8 and below',
+          "viewport-units-buggyfill requires a proper CSSOM and basic viewport unit support, which are not available in IE8 and below"
         );
       }
 
@@ -162,14 +162,14 @@ function factory() {
     }
 
     // fire a custom event that buggyfill was initialize
-    window.dispatchEvent(new CustomEvent('viewport-units-buggyfill-init'));
+    window.dispatchEvent(new CustomEvent("viewport-units-buggyfill-init"));
 
     options.hacks && options.hacks.initialize(options);
 
     initialized = true;
-    styleNode = document.createElement('style');
-    styleNode.id = 'patched-viewport';
-    document[options.appendToBody ? 'body' : 'head'].appendChild(styleNode);
+    styleNode = document.createElement("style");
+    styleNode.id = "patched-viewport";
+    document[options.appendToBody ? "body" : "head"].appendChild(styleNode);
 
     // Issue #6: Cross Origin Stylesheets are not accessible through CSSOM,
     // therefore download and inject them as <style> to circumvent SOP.
@@ -177,12 +177,12 @@ function factory() {
       let _refresh = debounce(refresh, options.refreshDebounceWait || 100);
       // doing a full refresh rather than updateStyles because an orientationchange
       // could activate different stylesheets
-      window.addEventListener('orientationchange', _refresh, true);
+      window.addEventListener("orientationchange", _refresh, true);
       // orientationchange might have happened while in a different window
-      window.addEventListener('pageshow', _refresh, true);
+      window.addEventListener("pageshow", _refresh, true);
 
       if (options.force || isBuggyIE || inIframe()) {
-        window.addEventListener('resize', _refresh, true);
+        window.addEventListener("resize", _refresh, true);
         options._listeningToResize = true;
       }
 
@@ -198,7 +198,7 @@ function factory() {
     // move to the end in case inline <style>s were added dynamically
     styleNode.parentNode.appendChild(styleNode);
     // fire a custom event that styles were updated
-    window.dispatchEvent(new CustomEvent('viewport-units-buggyfill-style'));
+    window.dispatchEvent(new CustomEvent("viewport-units-buggyfill-style"));
   }
 
   function refresh() {
@@ -224,7 +224,7 @@ function factory() {
         return;
       }
     } catch (e) {
-      if (e.name !== 'SecurityError') {
+      if (e.name !== "SecurityError") {
         throw e;
       }
       return;
@@ -245,9 +245,9 @@ function factory() {
 
       if (
         !cssRules ||
-        sheet.ownerNode.id === 'patched-viewport' ||
-        sheet.ownerNode.getAttribute('data-viewport-units-buggyfill') ===
-          'ignore'
+        sheet.ownerNode.id === "patched-viewport" ||
+        sheet.ownerNode.getAttribute("data-viewport-units-buggyfill") ===
+          "ignore"
       ) {
         // skip entire sheet because no rules are present, it's supposed to be ignored or it's the target-element of the buggyfill
         return;
@@ -311,7 +311,7 @@ function factory() {
       let value = rule.style.getPropertyValue(name);
       // preserve those !important rules
       if (rule.style.getPropertyPriority(name)) {
-        value += ' !important';
+        value += " !important";
       }
 
       viewportUnitExpression.lastIndex = 0;
@@ -334,13 +334,13 @@ function factory() {
     declarations.forEach(function (item) {
       let _item = overwriteDeclaration.apply(null, item);
       let _open = _item.selector.length
-        ? _item.selector.join(' {\n') + ' {\n'
-        : '';
-      let _close = new Array(_item.selector.length + 1).join('\n}');
+        ? _item.selector.join(" {\n") + " {\n"
+        : "";
+      let _close = new Array(_item.selector.length + 1).join("\n}");
 
       if (!_open || _open !== open) {
         if (buffer.length) {
-          css.push(open + buffer.join('\n') + close);
+          css.push(open + buffer.join("\n") + close);
           buffer.length = 0;
         }
 
@@ -366,17 +366,17 @@ function factory() {
     });
 
     if (buffer.length) {
-      css.push(open + buffer.join('\n') + close);
+      css.push(open + buffer.join("\n") + close);
     }
 
     // Opera Mini messes up on the content hack (it replaces the DOM node's innerHTML with the value).
     // This fixes it. We test for Opera Mini only since it is the most expensive CSS selector
     // see https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors
     if (isOperaMini) {
-      css.push('* { content: normal !important; }');
+      css.push("* { content: normal !important; }");
     }
 
-    return css.join('\n\n');
+    return css.join("\n\n");
   }
 
   function overwriteDeclaration(rule, name, value) {
@@ -392,15 +392,15 @@ function factory() {
     if (name) {
       // skipping KeyframesRule
       _selectors.push(rule.selectorText);
-      _value = name + ': ' + _value + ';';
+      _value = name + ": " + _value + ";";
     }
 
     let _rule = rule.parentRule;
     while (_rule) {
       if (_rule.media) {
-        _selectors.unshift('@media ' + _rule.media.mediaText);
+        _selectors.unshift("@media " + _rule.media.mediaText);
       } else if (_rule.conditionText) {
-        _selectors.unshift('@supports ' + _rule.conditionText);
+        _selectors.unshift("@supports " + _rule.conditionText);
       }
 
       _rule = _rule.parentRule;
@@ -415,7 +415,7 @@ function factory() {
   function replaceValues(match, number, unit) {
     let _base = dimensions[unit];
     let _number = parseFloat(number) / 100;
-    return _number * _base + 'px';
+    return _number * _base + "px";
   }
 
   function getViewport() {
@@ -443,8 +443,8 @@ function factory() {
       if (
         !sheet.href ||
         origin(sheet.href) === origin(location.href) ||
-        sheet.ownerNode.getAttribute('data-viewport-units-buggyfill') ===
-          'ignore'
+        sheet.ownerNode.getAttribute("data-viewport-units-buggyfill") ===
+          "ignore"
       ) {
         // skip <style> and <link> from same origin or explicitly declared to ignore
         return;
@@ -460,35 +460,35 @@ function factory() {
   }
 
   function origin(url) {
-    return url.slice(0, url.indexOf('/', url.indexOf('://') + 3));
+    return url.slice(0, url.indexOf("/", url.indexOf("://") + 3));
   }
 
   function convertLinkToStyle(link, next) {
     getCors(
       link.href,
       function () {
-        let style = document.createElement('style');
+        let style = document.createElement("style");
         style.media = link.media;
-        style.setAttribute('data-href', link.href);
+        style.setAttribute("data-href", link.href);
         style.textContent = this.responseText;
         link.parentNode.replaceChild(style, link);
         next();
       },
-      next,
+      next
     );
   }
 
   function getCors(url, success, error) {
     let xhr = new XMLHttpRequest();
-    if ('withCredentials' in xhr) {
+    if ("withCredentials" in xhr) {
       // XHR for Chrome/Firefox/Opera/Safari.
-      xhr.open('GET', url, true);
-    } else if (typeof XDomainRequest !== 'undefined') {
+      xhr.open("GET", url, true);
+    } else if (typeof XDomainRequest !== "undefined") {
       // XDomainRequest for IE.
       xhr = new XDomainRequest();
-      xhr.open('GET', url);
+      xhr.open("GET", url);
     } else {
-      throw new Error('cross-domain XHR not supported');
+      throw new Error("cross-domain XHR not supported");
     }
 
     xhr.onload = success;
@@ -498,7 +498,7 @@ function factory() {
   }
 
   return {
-    version: '0.6.1',
+    version: "0.6.1",
     findProperties: findProperties,
     getCss: getReplacedViewportUnits,
     init: initialize,

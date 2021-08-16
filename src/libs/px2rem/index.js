@@ -1,37 +1,37 @@
-'use strict';
+"use strict";
 
-var postcss = require('postcss');
-var objectAssign = require('object-assign');
-var pxRegex = require('./pixel-unit-regex');
-var filterPropList = require('./filter-prop-list');
+var postcss = require("postcss");
+var objectAssign = require("object-assign");
+var pxRegex = require("./pixel-unit-regex");
+var filterPropList = require("./filter-prop-list");
 
 var defaults = {
   rootValue: 16,
   unitPrecision: 5,
   selectorBlackList: [],
-  propList: ['font', 'font-size', 'line-height', 'letter-spacing'],
+  propList: ["font", "font-size", "line-height", "letter-spacing"],
   replace: true,
   mediaQuery: false,
   minPixelValue: 0,
 };
 
 var legacyOptions = {
-  root_value: 'rootValue',
-  unit_precision: 'unitPrecision',
-  selector_black_list: 'selectorBlackList',
-  prop_white_list: 'propList',
-  media_query: 'mediaQuery',
-  propWhiteList: 'propList',
+  root_value: "rootValue",
+  unit_precision: "unitPrecision",
+  selector_black_list: "selectorBlackList",
+  prop_white_list: "propList",
+  media_query: "mediaQuery",
+  propWhiteList: "propList",
 };
 
-module.exports = postcss.plugin('postcss-pxtorem', function (options) {
+module.exports = postcss.plugin("postcss-pxtorem", function (options) {
   convertLegacyOptions(options);
 
   var opts = objectAssign({}, defaults, options);
   var pxReplace = createPxReplace(
     opts.rootValue,
     opts.unitPrecision,
-    opts.minPixelValue,
+    opts.minPixelValue
   );
 
   var satisfyPropList = createPropListMatcher(opts.propList);
@@ -61,7 +61,7 @@ module.exports = postcss.plugin('postcss-pxtorem', function (options) {
       // }
       rule.walkDecls(function (decl, i) {
         // This should be the fastest test and will remove most declarations
-        if (decl.value.indexOf('px') === -1) return;
+        if (decl.value.indexOf("px") === -1) return;
 
         if (!satisfyPropList(decl.prop)) return;
 
@@ -70,11 +70,11 @@ module.exports = postcss.plugin('postcss-pxtorem', function (options) {
 
         var prev = decl.prev();
         var next = decl.next();
-        var value = '';
+        var value = "";
         // 添加判断/* no */不转化px
-        if (prev && prev.type === 'comment' && prev.text === 'no') {
+        if (prev && prev.type === "comment" && prev.text === "no") {
           value = decl.value;
-        } else if (next && next.type === 'comment' && next.text === 'no') {
+        } else if (next && next.type === "comment" && next.text === "no") {
           value = decl.value;
         } else {
           value = decl.value.replace(pxRegex, pxReplace);
@@ -92,8 +92,8 @@ module.exports = postcss.plugin('postcss-pxtorem', function (options) {
     });
 
     if (opts.mediaQuery) {
-      css.walkAtRules('media', function (rule) {
-        if (rule.params.indexOf('px') === -1) return;
+      css.walkAtRules("media", function (rule) {
+        if (rule.params.indexOf("px") === -1) return;
         rule.params = rule.params.replace(pxRegex, pxReplace);
       });
     }
@@ -101,16 +101,16 @@ module.exports = postcss.plugin('postcss-pxtorem', function (options) {
 });
 
 function convertLegacyOptions(options) {
-  if (typeof options !== 'object') return;
+  if (typeof options !== "object") return;
   if (
-    ((typeof options['prop_white_list'] !== 'undefined' &&
-      options['prop_white_list'].length === 0) ||
-      (typeof options.propWhiteList !== 'undefined' &&
+    ((typeof options["prop_white_list"] !== "undefined" &&
+      options["prop_white_list"].length === 0) ||
+      (typeof options.propWhiteList !== "undefined" &&
         options.propWhiteList.length === 0)) &&
-    typeof options.propList === 'undefined'
+    typeof options.propList === "undefined"
   ) {
-    options.propList = ['*'];
-    delete options['prop_white_list'];
+    options.propList = ["*"];
+    delete options["prop_white_list"];
     delete options.propWhiteList;
   }
   Object.keys(legacyOptions).forEach(function (key) {
@@ -127,7 +127,7 @@ function createPxReplace(rootValue, unitPrecision, minPixelValue) {
     var pixels = parseFloat($1);
     if (pixels < minPixelValue) return m;
     var fixedVal = toFixed(pixels / rootValue, unitPrecision);
-    return fixedVal === 0 ? '0' : fixedVal + 'rem';
+    return fixedVal === 0 ? "0" : fixedVal + "rem";
   };
 }
 
@@ -144,15 +144,15 @@ function declarationExists(decls, prop, value) {
 }
 
 function blacklistedSelector(blacklist, selector) {
-  if (typeof selector !== 'string') return;
+  if (typeof selector !== "string") return;
   return blacklist.some(function (regex) {
-    if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
+    if (typeof regex === "string") return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
 }
 
 function createPropListMatcher(propList) {
-  var hasWild = propList.indexOf('*') > -1;
+  var hasWild = propList.indexOf("*") > -1;
   var matchAll = hasWild && propList.length === 1;
   var lists = {
     exact: filterPropList.exact(propList),
